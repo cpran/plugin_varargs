@@ -1,0 +1,127 @@
+#! This script is part of the varargs CPrAN plugin for Praat.
+#! The latest version is available through CPrAN or at
+#! <http://cpran.net/plugins/varargs>
+#!
+#! The varargs plugin is free software: you can redistribute it
+#! and/or modify it under the terms of the GNU General Public
+#! License as published by the Free Software Foundation, either
+#! version 3 of the License, or (at your option) any later version.
+#!
+#! The varargs plugin is distributed in the hope that it will be
+#! useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+#! of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#! GNU General Public License for more details.
+#!
+#! You should have received a copy of the GNU General Public License
+#! along with utils. If not, see <http://www.gnu.org/licenses/>.
+#!
+#! Copyright 2016 Jose Joaquin Atria
+
+#! ~~~ params
+#! in:
+#!   - .argv$: >
+#!       A string whose first word is the name of a base procedure
+#!       (optionally, followed by a colon), followed by a by a comma
+#!       separated list of arguments, as if to be used with `@`.
+#! ~~~
+procedure varargs: .argv$
+  .base$ = extractWord$(.argv$, "")
+  .base$ = .base$ - ":"
+  .args$ = extractLine$(.argv$, " ")
+
+  @arg: .args$
+  @'.base$'()
+  if variableExists(.base$ + "." + arg.t$)
+    call '.base$'.'arg.t$' 'arg.v$'
+
+  else
+    exitScript: "No procedure with that signature:" + newline$ +
+      ... "« " + .argv$ + " »"
+  endif
+
+  for .i to arg.n
+    arg.v$[.i] = ""
+  endfor
+endproc
+
+#! ~~~ params
+#! in:
+#!   - .in$: A comma-separated argument list (as if to be used with `@`)
+#! out:
+#!   - .n: The number of parsed arguments
+#!   - .v$: A space-separated argument list (as if to be used with `call`)
+#!   - .t$: >
+#!       The signature of parsed arguments, encoded as a string of "n" (for
+#!       numerics) and "s" (for strings) characters, one per parsed argument.
+#!       If no arguments were passed, `.t$` will be `nil`.
+#!   - v$[]: A list of each individual argument, all of them as strings.
+#! ~~~
+procedure arg: .in$
+  .length = length(.in$)
+  .string = 0
+
+  .n = 0
+  .v$ = ""
+  .t$ = ""
+  if .length
+    .n = 1
+
+    # Walk through argument string
+    for .i to .length
+      .c$ = mid$(.in$, .i, 1)
+
+      if !variableExists(".v$[" + string$(.n) + "]")
+        .v$[.n] = ""
+      endif
+
+
+      # Found a quotation mark
+      if .c$ == """"
+        # It is an escaped quotation mark
+        if .i < .length and mid$(.in$, .i + 1 , 1) == """"
+          .v$[.n] = .v$[.n] + """"
+          .i += 1
+        else
+          # Toggle string status
+          .string = 1 - .string
+
+          # New string found
+          if .string
+            .t$ = .t$ + "s"
+          endif
+        endif
+
+      # Found a comma, not in a string
+      elsif .c$ == "," and !.string
+        if right$(.t$) == "s"
+          .v$ = .v$ + """" + .v$[.n] + """ "
+        else
+          .v$ = .v$ + .v$[.n] + " "
+        endif
+
+        .n += 1
+      # Ignore spaces not in strings
+      elsif .c$ == " " and !.string
+      # Save every other character to the current variable
+      else
+        # New numeric found
+        if .v$[.n] == "" and !.string
+          .t$ = .t$ + "n"
+        endif
+
+        .v$[.n] = .v$[.n] + .c$
+      endif
+    endfor
+    .v$ = .v$ + .v$[.n]
+
+    # String status left open
+    if .string
+      exitScript: "No closing quote in argument list:" + newline$ +
+        ... "« " + .in$ + " »"
+    endif
+  # No arguments
+  else
+    .t$ = "nil"
+  endif
+
+endproc
