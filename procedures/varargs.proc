@@ -21,7 +21,7 @@
 #! in:
 #!   - .argv$: >
 #!       A string whose first word is the name of a base procedure
-#!       (optionally, followed by a colon), followed by a by a comma
+#!       (optionally, followed by a colon), followed by a comma
 #!       separated list of arguments, as if to be used with `@`.
 #! ~~~
 procedure varargs: .argv$
