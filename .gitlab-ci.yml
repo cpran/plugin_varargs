@@ -10,9 +10,9 @@ Praat 5.4.22:
     - cpran
   allow_failure: true
 
-Praat 6.0.00:
+Praat 6.0.03:
   script:
-    - prove -v --exec "praat-6.0.00 --ansi --pref-dir=../.. --run"
+    - prove -v --exec "praat-6.0.03 --ansi --pref-dir=../.. --run"
   tags:
     - cpran
   allow_failure: true
