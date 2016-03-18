@@ -120,7 +120,8 @@ procedure arg: .in$
       elsif .c$ == " " and !.string
       # Save every other character to the current variable
       else
-        # New numeric found
+        # New non-string found
+        # This can be a numeric or a variable
         if .v$[.n] == "" and !.string
           .t$ = .t$ + "n"
         endif
@@ -135,6 +136,33 @@ procedure arg: .in$
       exitScript: "No closing quote in argument list:" + newline$ +
         ... "« " + .in$ + " »"
     endif
+
+    # Loop through non-strings to find variable names
+    # and replace their values into the argument list
+    .length = length(.t$)
+    for .i to .length
+      .c$ = mid$(.t$, .i, 1)
+      if .c$ == "n"
+        .num = number(.v$[.i])
+        if .num == undefined
+          # Is a non-number non-string: a variable name
+          if !variableExists(.v$[.i])
+            exitScript: "Unknown variable:" + newline$ +
+              ... "» " + .v$[.i] + newline$ +
+              ... " found in " + newline$ + "» " + .in$ + " «"
+          else
+            .varname$ = .v$[.i]
+            if right$(.varname$) == "$"
+              .v$[.i] = '.varname$'
+              .t$ = left$(.t$, .i - 1) + "s" + right$(.t$, length(.t$) - .i)
+            else
+              .v$[.i] = string$('.varname$')
+            endif
+          endif
+        endif
+      endif
+  endfor
+
   # No arguments
   else
     .t$ = "nil"
