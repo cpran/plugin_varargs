@@ -24,6 +24,16 @@ call varargs myproc: "a", 0
 @ok: sn == 1, "One string, one numeric"
 @reset()
 
+a$ = "a"
+call varargs myproc: a$, 0
+@ok: sn == 1, "One string variable, one numeric"
+@reset()
+
+b = 0
+call varargs myproc: "a", b
+@ok: sn == 1, "One string, one numeric variable"
+@reset()
+
 call varargs myproc: "a", "b"
 @ok: ss == 1, "Two strings"
 @reset()
