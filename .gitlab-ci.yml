@@ -9,8 +9,26 @@ Praat 5.4.22:
   tags:
     - cpran
 
-Praat 6.0.03:
+Praat 6.0.00:
   script:
-    - prove -v --exec "praat-6.0.03 --ansi --pref-dir=../.. --run"
+    - prove -v --exec "praat-6.0.00 --ansi --pref-dir=../.. --run"
+  tags:
+    - cpran
+
+Praat 6.0.11:
+  script:
+    - prove -v --exec "praat-6.0.11 --ansi --pref-dir=../.. --run"
+  tags:
+    - cpran
+
+Praat 6.0.13:
+  script:
+    - prove -v --exec "praat-6.0.13 --ansi --pref-dir=../.. --run"
+  tags:
+    - cpran
+
+Praat 6.0.14:
+  script:
+    - prove -v --exec "praat-6.0.14 --ansi --pref-dir=../.. --run"
   tags:
     - cpran
