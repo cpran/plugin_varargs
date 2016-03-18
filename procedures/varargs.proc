@@ -70,6 +70,12 @@ procedure arg: .in$
   .length = length(.in$)
   .string = 0
 
+  if variableExists("arg.n")
+    for .i to arg.n
+      arg.v$[.i] = ""
+    endfor
+  endif
+
   .n = 0
   .v$ = ""
   .t$ = ""
