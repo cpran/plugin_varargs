@@ -10,7 +10,7 @@ Praat 5.4.22:
   script:
     - prove -v --exec "praat-5.4.22 --ansi --pref-dir=~/.praat-dir"
     - rm -rf ~/.praat-dir/plugin_testsimple ../plugin_testsimple
-    - rm -rf ~/.praat-dir/plugin_varargs"
+    - rm -rf ~/.praat-dir/plugin_varargs
   tags:
     - cpran
 
@@ -18,6 +18,6 @@ Praat 6.0.03:
   script:
     - prove -v --exec "praat-6.0.03 --ansi --pref-dir=~/.praat-dir --run"
     - rm -rf ~/.praat-dir/plugin_testsimple ../plugin_testsimple
-    - rm -rf ~/.praat-dir/plugin_varargs"
+    - rm -rf ~/.praat-dir/plugin_varargs
   tags:
     - cpran
