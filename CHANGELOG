@@ -1,4 +1,11 @@
 - next: # unreleased
+- v0.0.3
+  - New:
+    - Add support for hashes
+  - Changes:
+    - Completely refactored logic in @arg
+  - Fix:
+    - Minor fixes in documentation
 - v0.0.2
   - Add support for multiple calling schemes
   - Add support for variable names in argument list
