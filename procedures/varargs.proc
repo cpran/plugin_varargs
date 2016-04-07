@@ -19,10 +19,11 @@
 
 #! ~~~ params
 #! in:
-#!   - .argv$: >
-#!       A string that will be parsed exactly like what comes after
-#!       the `@` in a procedure call.
+#!   .argv$: >
+#!     A string that will be parsed exactly like what comes after
+#!     the `@` in a procedure call.
 #! ~~~
+#!
 procedure varargs: .argv$
   .base$ = replace_regex$(.argv$, "^\s*([_a-zA-Z0-9\.]+)\s*([:(]?).*", "\1\2", 0)
   .args$ = .argv$ - ")"
@@ -56,16 +57,17 @@ endproc
 
 #! ~~~ params
 #! in:
-#!   - .in$: A comma-separated argument list (as if to be used with `@`)
+#!   .in$: A comma-separated argument list (as if to be used with `@`)
 #! out:
-#!   - .n: The number of parsed arguments
-#!   - .v$: A space-separated argument list (as if to be used with `call`)
-#!   - .t$: >
-#!       The signature of parsed arguments, encoded as a string of "n" (for
-#!       numerics) and "s" (for strings) characters, one per parsed argument.
-#!       If no arguments were passed, `.t$` will be `nil`.
-#!   - v$[]: A list of each individual argument, all of them as strings.
+#!   .n: The number of parsed arguments
+#!   .v$: A space-separated argument list (as if to be used with `call`)
+#!   .t$: >
+#!     The signature of parsed arguments, encoded as a string of "n" (for
+#!     numerics) and "s" (for strings) characters, one per parsed argument.
+#!     If no arguments were passed, `.t$` will be `nil`.
+#!   .v$[]: A list of each individual argument, all of them as strings.
 #! ~~~
+#!
 procedure arg: .in$
   .length = length(.in$)
   .string = 0
