@@ -17,6 +17,8 @@
 #!
 #! Copyright 2016 Jose Joaquin Atria
 
+include ../../plugin_utils/procedures/utils.proc
+
 #! ~~~ params
 #! in:
 #!   .argv$: >
@@ -69,105 +71,92 @@ endproc
 #! ~~~
 #!
 procedure arg: .in$
-  .length = length(.in$)
-  .string = 0
+  @split: ",", .in$
+  for .i to split.length
+    .vv$[.i] = split.return$[.i]
+  endfor
+  .nn = split.length
 
-  if variableExists("arg.n")
-    for .i to arg.n
-      arg.v$[.i] = ""
-    endfor
-  endif
+  # Split argument by commas, and look for arguments that were broken in
+  # the process and merge them back together. Merger will leave some
+  # indexes empty.
+  for .j from 0 to .nn-1
+    .merge = 0
+    .i = .nn - .j
+
+    @strcount_regex: .vv$[.i], "[[]]"
+    if strcount_regex.return mod 2
+      .merge = 1
+    endif
+
+    @strcount_regex: .vv$[.i], "[()]"
+    if strcount_regex.return mod 2
+      .merge = 1
+    endif
+
+    @strcount_regex: .vv$[.i], """"
+    if strcount_regex.return mod 2
+      .merge = 1
+    endif
+
+
+    if .merge
+      .vv$[.i] = .vv$[.i-1] + "," + .vv$[.i]
+      .vv$[.i-1] = ""
+
+      .j -= 1
+    endif
+  endfor
 
   .n = 0
-  .v$ = ""
   .t$ = ""
-  if .length
-    .n = 1
+  .v$ = ""
+  if .nn
 
-    # Walk through argument string
-    for .i to .length
-      .c$ = mid$(.in$, .i, 1)
-
-      if !variableExists(".v$[" + string$(.n) + "]")
-        .v$[.n] = ""
-      endif
-
-
-      # Found a quotation mark
-      if .c$ == """"
-        # It is an escaped quotation mark
-        if .i < .length and mid$(.in$, .i + 1 , 1) == """"
-          .v$[.n] = .v$[.n] + """"
-          .i += 1
-        else
-          # Toggle string status
-          .string = 1 - .string
-
-          # New string found
-          if .string
-            .t$ = .t$ + "s"
-          endif
-        endif
-
-      # Found a comma, not in a string
-      elsif .c$ == "," and !.string
-        if right$(.t$) == "s"
-          .v$ = .v$ + """" + .v$[.n] + """ "
-        else
-          .v$ = .v$ + .v$[.n] + " "
-        endif
-
+    # Process merged arguments by passing them to the internal parser
+    # with `nocheck writeInfo`. If this results in the empty string,
+    # there was an undefined variable in the argument
+    for .i to .nn
+      if .vv$[.i] != ""
         .n += 1
-      # Ignore spaces not in strings
-      elsif .c$ == " " and !.string
-      # Save every other character to the current variable
-      else
-        # New non-string found
-        # This can be a numeric or a variable
-        if .v$[.n] == "" and !.string
+        .vv$ = .vv$[.i]
+        .vv$ = replace_regex$(.vv$, "^\s+", "", 0)
+        .vv$ = replace_regex$(.vv$, "\s+$", "", 0)
+
+        if    index_regex(.vv$, "^\.?[a-z][a-zA-Z0-9.]*\$") or
+          ... index_regex(.vv$, "^""")
+          .t$ = .t$ + "s"
+        else
           .t$ = .t$ + "n"
         endif
 
-        .v$[.n] = .v$[.n] + .c$
-      endif
-    endfor
-    .v$ = .v$ + .v$[.n]
-
-    # String status left open
-    if .string
-      exitScript: "No closing quote in argument list:" + newline$ +
-        ... "« " + .in$ + " »"
-    endif
-
-    # Loop through non-strings to find variable names
-    # and replace their values into the argument list
-    .length = length(.t$)
-    for .i to .length
-      .c$ = mid$(.t$, .i, 1)
-      if .c$ == "n"
-        .num = number(.v$[.i])
-        if .num == undefined
-          # Is a non-number non-string: a variable name
-          if !variableExists(.v$[.i])
-            exitScript: "Unknown variable:" + newline$ +
-              ... "» " + .v$[.i] + newline$ +
-              ... " found in " + newline$ + "» " + .in$ + " «"
-          else
-            .varname$ = .v$[.i]
-            if right$(.varname$) == "$"
-              .v$[.i] = '.varname$'
-              .t$ = left$(.t$, .i - 1) + "s" + right$(.t$, length(.t$) - .i)
-            else
-              .v$[.i] = string$('.varname$')
-            endif
-          endif
+        .v$[.n] = nocheck writeInfo: '.vv$'
+        if .v$[.n] == ""
+          exitScript: "Unknown variable:" + newline$ +
+            ... "» " + .vv$ + newline$ +
+            ... " found in " + newline$ + "» " + .in$ + " «"
         endif
       endif
-  endfor
+    endfor
 
-  # No arguments
-  else
-    .t$ = "nil"
+    # Detect the type per argument. Only strings and numerics supported
+    # at this point. How do arrays work?
+    if .n
+      for .i to .n
+        if mid$(.t$, .i, 1) == "s" and .i < .n
+          .v$ = .v$ + """" + .v$[.i] + """ "
+        else
+          .v$ = .v$ + .v$[.i] + " "
+        endif
+      endfor
+      .v$ = .v$ - " "
+    else
+      .t$ = "nil"
+    endif
   endif
 
+  # appendInfoLine: "in$: ", .in$
+  # appendInfoLine: "n: ",   .n
+  # appendInfoLine: "t$: ",  .t$
+  # appendInfoLine: "v$: ",  .v$
 endproc
