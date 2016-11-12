@@ -1,12 +1,21 @@
 - next: # unreleased
-- v0.0.3
+- v0.0.4:
+  -New:
+    - Add alternative method for procedure calls, with support
+      for variable arguments and recursive calls
+    - Add a list of argument signatures, for easier handling
+  - Changes:
+    - Empty signatures are transformed to "nil" by @varargs, not
+      @arg.
+    - Tests use tap plugin
+- v0.0.3:
   - New:
     - Add support for hashes
   - Changes:
     - Completely refactored logic in @arg
   - Fix:
     - Minor fixes in documentation
-- v0.0.2
+- v0.0.2:
   - Add support for multiple calling schemes
   - Add support for variable names in argument list
 - v0.0.1:
