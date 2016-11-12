@@ -79,36 +79,40 @@ procedure arg: .in$
   endfor
   .nn = split.length
 
-  # Split argument by commas, and look for arguments that were broken in
-  # the process and merge them back together. Merger will leave some
-  # indexes empty.
-  for .j from 0 to .nn-1
-    .merge = 0
-    .i = .nn - .j
+  if .in$ == "" or .in$ == """"""
+    .nn = 0
+  else
+    # Split argument by commas, and look for arguments that were broken in
+    # the process and merge them back together. Merger will leave some
+    # indexes empty.
+    for .j from 0 to .nn-1
+      .merge = 0
+      .i = .nn - .j
 
-    @strcount_regex: .vv$[.i], "[[]]"
-    if strcount_regex.return mod 2
-      .merge = 1
-    endif
+      @strcount_regex: .vv$[.i], "[[]]"
+      if strcount_regex.return mod 2
+        .merge = 1
+      endif
 
-    @strcount_regex: .vv$[.i], "[()]"
-    if strcount_regex.return mod 2
-      .merge = 1
-    endif
+      @strcount_regex: .vv$[.i], "[()]"
+      if strcount_regex.return mod 2
+        .merge = 1
+      endif
 
-    @strcount_regex: .vv$[.i], """"
-    if strcount_regex.return mod 2
-      .merge = 1
-    endif
+      @strcount_regex: .vv$[.i], """"
+      if strcount_regex.return mod 2
+        .merge = 1
+      endif
 
 
-    if .merge
-      .vv$[.i] = .vv$[.i-1] + "," + .vv$[.i]
-      .vv$[.i-1] = ""
+      if .merge
+        .vv$[.i] = .vv$[.i-1] + "," + .vv$[.i]
+        .vv$[.i-1] = ""
 
-      .j -= 1
-    endif
-  endfor
+        .j -= 1
+      endif
+    endfor
+  endif
 
   .n = 0
   .t$ = ""
