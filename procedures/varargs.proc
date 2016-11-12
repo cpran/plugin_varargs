@@ -44,8 +44,9 @@ procedure varargs: .argv$
 
   @arg: .args$
   @'.base$'()
-  if variableExists(.base$ + "." + arg.t$)
-    call '.base$'.'arg.t$' 'arg.v$'
+  .t$ = if arg.t$ == "" then "nil" else arg.t$ fi
+  if variableExists(.base$ + "." + .t$)
+    call '.base$'.'.t$' 'arg.v$'
 
   else
     exitScript: "No procedure with that signature:" + newline$ +
