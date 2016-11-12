@@ -1,7 +1,7 @@
 include ../procedures/varargs.proc
-include ../../plugin_testsimple/procedures/test_simple.proc
+include ../../plugin_tap/procedures/more.proc
 
-@plan(11)
+@plan: 37
 
 a = 5
 a[1] = 5
@@ -34,46 +34,62 @@ list$ = "1, 3, 34, 32, -1, 0"
 call min: 'list$'
 @ok: min.return == min('list$'), "Six"
 
+call arg undefined
+@is:  arg.n,     1,                  "undefined value: n"
+@is$: arg.v$[1], string$(undefined), "undefined value: v$[]"
+@is$: arg.t$,    "n",                "undefined value: t$"
+
+call arg undefined, undefined, 10
+@is:  arg.n,     3,     "undefined list: n"
+@is$: arg.v$[3], "10",  "undefined list: v$[]"
+@is$: arg.t$,    "nnn", "undefined list: t$"
+
+call arg ""
+@is:  arg.n,     0,  "empty string: n"
+@is$: arg.t$,    "", "empty string: t$"
+
+@arg("")
+@is:  arg.n,     0,  "blank: n"
+@is$: arg.t$,    "", "blank: t$"
+
 if praatVersion >= 6016
   a[   "na" + "me"] = 5
   num$["na" + "me"] = "5"
   str$["na" + "me"] = "hello"
 
   call arg a["na" + "me" + string$(number("hello")) - string$(undefined)]
-  @ok:  arg.n             == 1         and
-    ... number(arg.v$)    == a["name"] and
-    ... number(arg.v$[1]) == a["name"] and
-    ... arg.t$            == "n"
-    ... , "Hash with complex index"
+  @is:  arg.n,             1,         "Hash with complex index: n"
+  @is:  number(arg.v$),    a["name"], "Hash with complex index: v$"
+  @is:  number(arg.v$[1]), a["name"], "Hash with complex index: v$[]"
+  @is$: arg.t$,            "n",       "Hash with complex index: t$"
+  @is:  index_regex(arg.s$, """"), 0, "Hash with complex index: s$"
 
   call arg a["name"]
-  @ok:  arg.n             == 1         and
-    ... number(arg.v$)    == a["name"] and
-    ... number(arg.v$[1]) == a["name"] and
-    ... arg.t$            == "n"
-    ... , "Numeric hash"
+  @is:  arg.n,             1,         "Numeric hash: n"
+  @is:  number(arg.v$),    a["name"], "Numeric hash: v$"
+  @is:  number(arg.v$[1]), a["name"], "Numeric hash: v$[]"
+  @is$: arg.t$,            "n",       "Numeric hash: t$"
+  @is:  index_regex(arg.s$, """"), 0, "Numeric hash: s$"
 
   call arg num$["name"]
-  @ok:  arg.n     == 1            and
-    ... arg.v$    == num$["name"] and
-    ... arg.v$[1] == num$["name"] and
-    ... arg.t$    == "s"
-    ... , "Numish string hash"
+  @is:  arg.n,     1,            "Numish string hash: n"
+  @is$: arg.v$,    num$["name"], "Numish string hash: v$"
+  @is$: arg.v$[1], num$["name"], "Numish string hash: v$[]"
+  @is$: arg.t$,    "s",          "Numish string hash: t$"
+  @is:  index_regex(arg.s$, "^"".*""$"), 1, "Numish string hash: s$"
 
   call arg str$["name"]
-  @ok:  arg.n     == 1            and
-    ... arg.v$    == str$["name"] and
-    ... arg.v$[1] == str$["name"] and
-    ... arg.t$    == "s"
-    ... , "String hash"
+  @is:  arg.n,     1,            "String hash: n"
+  @is$: arg.v$,    str$["name"], "String hash: v$"
+  @is$: arg.v$[1], str$["name"], "String hash: v$[]"
+  @is$: arg.t$,    "s",          "String hash: t$"
+  @is:  index_regex(arg.s$, "^"".*""$"), 1, "String hash: s$"
 else
   # Just to maintain test numbers
-  @skip: undefined, "hashes not supported below 6.0.16"
-  @ok: 0, ""
-  @ok: 0, ""
-  @ok: 0, ""
-  @ok: 0, ""
-  @end_skip()
+  @skip: 20, "hashes not supported below 6.0.16"
+  for i to 20
+    @ok: 0, ""
+  endfor
 endif
 
 procedure min: .args$
