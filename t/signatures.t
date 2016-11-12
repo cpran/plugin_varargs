@@ -1,7 +1,7 @@
 include ../procedures/varargs.proc
-include ../../plugin_testsimple/procedures/test_simple.proc
+include ../../plugin_tap/procedures/more.proc
 
-@no_plan()
+@plan: 18
 @reset()
 
 call varargs myproc
@@ -9,37 +9,37 @@ call varargs myproc
 @reset()
 
 call varargs myproc: 1
-@ok: n == 1, "One numeric"
+@is: n, 1, "One numeric"
 @reset()
 
 call varargs myproc: "a"
-@ok: s == 1, "One string"
+@is: s, 1, "One string"
 @reset()
 
 call varargs myproc: 1, "b"
-@ok: ns == 1, "One numeric, one string"
+@is: ns, 1, "One numeric, one string"
 @reset()
 
 call varargs myproc: "a", 0
-@ok: sn == 1, "One string, one numeric"
+@is: sn, 1, "One string, one numeric"
 @reset()
 
 a$ = "a"
 call varargs myproc: a$, 0
-@ok: sn == 1, "One string variable, one numeric"
+@is: sn, 1, "One string variable, one numeric"
 @reset()
 
 b = 0
 call varargs myproc: "a", b
-@ok: sn == 1, "One string, one numeric variable"
+@is: sn, 1, "One string, one numeric variable"
 @reset()
 
 call varargs myproc: "a", "b"
-@ok: ss == 1, "Two strings"
+@is: ss, 1, "Two strings"
 @reset()
 
 call varargs myproc: 1, 0
-@ok: nn == 1, "Two numerics"
+@is: nn, 1, "Two numerics"
 
 procedure myproc ()
   .nil = 1
