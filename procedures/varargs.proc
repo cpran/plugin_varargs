@@ -69,6 +69,7 @@ endproc
 #!     The signature of parsed arguments, encoded as a string of "n" (for
 #!     numerics) and "s" (for strings) characters, one per parsed argument.
 #!     If no arguments were passed, `.t$` will be empty
+#!   .t$[]: A list of the signature of each argument, as strings.
 #!   .v$[]: A list of each individual argument, all of them as strings.
 #! ~~~
 #!
@@ -132,10 +133,11 @@ procedure arg: .in$
 
         if    index_regex(.vv$, "^\.?[a-z][a-zA-Z0-9.]*\$") or
           ... index_regex(.vv$, "^""")
-          .t$ = .t$ + "s"
+          .t$[.n] = "s"
         else
-          .t$ = .t$ + "n"
+          .t$[.n] = "n"
         endif
+        .t$ = .t$ + .t$[.n]
 
         .v$[.n] = nocheck writeInfo: '.vv$'
         if .v$[.n] == ""
@@ -151,7 +153,7 @@ procedure arg: .in$
     .s$ = ""
     if .n
       for .i to .n
-        if mid$(.t$, .i, 1) == "s"
+        if .t$[.i] == "s"
           .s$ = .s$ + """" + .v$[.i] + """, "
           if .i < .n
             .v$ = .v$ + """" + .v$[.i] + """ "
