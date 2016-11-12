@@ -1,47 +1,47 @@
 include ../procedures/varargs.proc
-include ../../plugin_testsimple/procedures/test_simple.proc
+include ../../plugin_tap/procedures/more.proc
 
 @no_plan()
 
 result$ = ""
 call varargs myproc
-@ok: result$ == "foo bar", "Empty call"
+@is$: result$, "foo bar", "Empty call"
 
 result$ = ""
 call varargs myproc ()
-@ok: result$ == "foo bar", "Empty call with spaced parens"
+@is$: result$, "foo bar", "Empty call with spaced parens"
 
 result$ = ""
 call varargs myproc()
-@ok: result$ == "foo bar", "Empty call with parens"
+@is$: result$, "foo bar", "Empty call with parens"
 
 result$ = ""
 call varargs myproc: "bar"
-@ok: result$ == "bar bar", "Colon call with one argument"
+@is$: result$, "bar bar", "Colon call with one argument"
 
 result$ = ""
 call varargs myproc("bar")
-@ok: result$ == "bar bar", "Paren call with one argument"
+@is$: result$, "bar bar", "Paren call with one argument"
 
 result$ = ""
 call varargs myproc: "bar")
-@ok: result$ == "bar bar", "Mixed call with one argument"
+@is$: result$, "bar bar", "Mixed call with one argument"
 
 result$ = ""
 call varargs myproc : "bar", "foo")
-@ok: result$ == "bar foo", "Spaced colon with closing paren"
+@is$: result$, "bar foo", "Spaced colon with closing paren"
 
 result$ = ""
 call varargs myproc ("bar", "foo")
-@ok: result$ == "bar foo", "Paren call with space before"
+@is$: result$, "bar foo", "Paren call with space before"
 
 result$ = ""
 call varargs myproc( "bar", "foo" )
-@ok: result$ == "bar foo", "Paren call with space within"
+@is$: result$, "bar foo", "Paren call with space within"
 
 result$ = ""
 call varargs myproc("bar", "foo")
-@ok: result$ == "bar foo", "Paren call with no spaces"
+@is$: result$, "bar foo", "Paren call with no spaces"
 
 procedure myproc ()
   .nil = 1
