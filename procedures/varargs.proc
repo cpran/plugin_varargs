@@ -64,6 +64,7 @@ endproc
 #! out:
 #!   .n: The number of parsed arguments
 #!   .v$: A space-separated argument list (as if to be used with `call`)
+#!   .s$: A comma-separated argument list (as if to be used with `@`)
 #!   .t$: >
 #!     The signature of parsed arguments, encoded as a string of "n" (for
 #!     numerics) and "s" (for strings) characters, one per parsed argument.
@@ -112,8 +113,9 @@ procedure arg: .in$
   .n = 0
   .t$ = ""
   .v$ = ""
-  if .nn
+  .s$ = ""
 
+  if .nn
     # Process merged arguments by passing them to the internal parser
     # with `nocheck writeInfo`. If this results in the empty string,
     # there was an undefined variable in the argument
@@ -142,15 +144,23 @@ procedure arg: .in$
 
     # Detect the type per argument. Only strings and numerics supported
     # at this point. How do arrays work?
+    .s$ = ""
     if .n
       for .i to .n
-        if mid$(.t$, .i, 1) == "s" and .i < .n
-          .v$ = .v$ + """" + .v$[.i] + """ "
+        if mid$(.t$, .i, 1) == "s"
+          .s$ = .s$ + """" + .v$[.i] + """, "
+          if .i < .n
+            .v$ = .v$ + """" + .v$[.i] + """ "
+          else
+            .v$ = .v$ + .v$[.i] + " "
+          endif
         else
           .v$ = .v$ + .v$[.i] + " "
+          .s$ = .s$ + .v$[.i] + ", "
         endif
       endfor
       .v$ = .v$ - " "
+      .s$ = .s$ - ", "
     endif
   endif
 
