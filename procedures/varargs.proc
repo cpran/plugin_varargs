@@ -239,8 +239,9 @@ procedure arg: .in$
     endif
   endif
 
-  # appendInfoLine: "in$: ", .in$
-  # appendInfoLine: "n: ",   .n
-  # appendInfoLine: "t$: ",  .t$
-  # appendInfoLine: "v$: ",  .v$
+  # @trace: "  arg.in$: " + .in$
+  # @trace: "  arg.n: "   +   string$(.n)
+  # @trace: "  arg.t$: "  +  .t$
+  # @trace: "  arg.s$: "  +  .s$
+  # @trace: "  arg.v$: "  +  .v$
 endproc
