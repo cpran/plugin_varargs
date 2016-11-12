@@ -26,6 +26,75 @@ include ../../plugin_utils/procedures/utils.proc
 #!     the `@` in a procedure call.
 #! ~~~
 #!
+procedure @: .argv$
+  if !variableExists("@.level")
+    .level = 0
+  else
+    .level += 1
+  endif
+
+  .base$ = replace_regex$(.argv$, "^\s*([_a-zA-Z0-9\.]+)\s*([:(]?).*", "\1\2", 0)
+  .args$ = .argv$ - ")"
+
+  .r$ = right$(.base$)
+  if .r$ == "(" or .r$ == ":"
+    .base$ = .base$ - .r$
+    .args$ = extractLine$(.args$, .r$)
+    if .r$ == ":" and .args$ == ""
+      exitScript: "Empty formula:" + newline$ +
+         ... "« " + .argv$ + " »"
+    endif
+  else
+    .args$ = extractLine$(.args$, " ")
+  endif
+
+  @arg: .args$
+  for .i to arg.n
+    arg'.level'.v$[.i] = arg.v$[.i]
+    '.base$'.argv$[.i] = arg'.level'.v$[.i]
+  endfor
+  arg'.level'.n  = arg.n
+  arg'.level'.t$ = arg.t$
+  arg'.level'.v$ = arg.v$
+  arg'.level'.s$ = arg.s$
+
+  '.base$'.argn  = arg'.level'.n
+  '.base$'.argt$ = arg'.level'.t$
+  '.base$'.argv$ = arg'.level'.v$
+  '.base$'.args$ = arg'.level'.s$
+
+  @'.base$'()
+
+  .level -= 1
+
+  if .level >= 0
+    for .i to arg.n
+      '.base$'.argv$[.i] = arg'.level'.v$[.i]
+    endfor
+
+    '.base$'.argn  = arg'.level'.n
+    '.base$'.argt$ = arg'.level'.t$
+    '.base$'.argv$ = arg'.level'.v$
+    '.base$'.args$ = arg'.level'.s$
+  endif
+
+  if !.level
+    if arg.n != undefined
+      for .i to arg.n
+        arg.v$[.i] = ""
+      endfor
+      arg.n = undefined
+    endif
+  endif
+endproc
+
+#! ~~~ params
+#! in:
+#!   .argv$: >
+#!     A string that will be parsed exactly like what comes after
+#!     the `@` in a procedure call.
+#! ~~~
+#!
 procedure varargs: .argv$
   .base$ = replace_regex$(.argv$, "^\s*([_a-zA-Z0-9\.]+)\s*([:(]?).*", "\1\2", 0)
   .args$ = .argv$ - ")"
