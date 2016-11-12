@@ -4,7 +4,7 @@ include ../../plugin_utils/procedures/trace.proc
 
 trace.enable = 1
 
-@no_plan()
+@plan: 29
 
 call @:myproc
 @is$: myproc.result$, "foo bar", "Empty call"

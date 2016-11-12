@@ -1,7 +1,7 @@
 include ../procedures/varargs.proc
 include ../../plugin_tap/procedures/more.proc
 
-@no_plan()
+@plan: 10
 
 result$ = ""
 call varargs myproc
