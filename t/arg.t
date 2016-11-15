@@ -1,7 +1,7 @@
 include ../procedures/varargs.proc
 include ../../plugin_tap/procedures/more.proc
 
-@plan: 37
+@plan: 38
 
 a = 5
 a[1] = 5
@@ -38,6 +38,7 @@ call arg undefined
 @is:  arg.n,     1,                  "undefined value: n"
 @is$: arg.v$[1], string$(undefined), "undefined value: v$[]"
 @is$: arg.t$,    "n",                "undefined value: t$"
+@is$: arg.s$,    "undefined",        "undefined value: s$"
 
 call arg undefined, undefined, 10
 @is:  arg.n,     3,     "undefined list: n"

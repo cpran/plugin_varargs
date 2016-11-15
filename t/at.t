@@ -145,4 +145,13 @@ procedure fibonacci ()
   endif
 endproc
 
+call @:fibonacci: 7
+@is: fibonacci.return, 13, "Recursive Fibonacci"
+
+
+call @:undefined: undefined
+procedure undefined ()
+  @diag: .args$
+endproc
+
 @done_testing()
