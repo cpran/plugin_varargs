@@ -1,4 +1,7 @@
 - next: # unreleased
+- v0.0.5:
+  - Fix:
+    - Improved support for undefined variables
 - v0.0.4:
   -New:
     - Add alternative method for procedure calls, with support
