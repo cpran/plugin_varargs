@@ -33,8 +33,12 @@ procedure @: .argv$
     .level += 1
   endif
 
+  if index_regex(.argv$, "^\s*[_a-zA-Z0-9\.]+\s*\(")
+    .args$ = .argv$ - ")"
+  else
+    .args$ = .argv$
+  endif
   .base$ = replace_regex$(.argv$, "^\s*([_a-zA-Z0-9\.]+)\s*([:(]?).*", "\1\2", 0)
-  .args$ = .argv$ - ")"
 
   .r$ = right$(.base$)
   if .r$ == "(" or .r$ == ":"
@@ -96,8 +100,12 @@ endproc
 #! ~~~
 #!
 procedure varargs: .argv$
+  if index_regex(.argv$, "^\s*[_a-zA-Z0-9\.]+\s*\(")
+    .args$ = .argv$ - ")"
+  else
+    .args$ = .argv$
+  endif
   .base$ = replace_regex$(.argv$, "^\s*([_a-zA-Z0-9\.]+)\s*([:(]?).*", "\1\2", 0)
-  .args$ = .argv$ - ")"
 
   .r$ = right$(.base$)
   if .r$ == "(" or .r$ == ":"
