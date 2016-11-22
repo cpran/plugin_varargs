@@ -4,7 +4,7 @@ include ../../plugin_utils/procedures/trace.proc
 
 trace.enable = 1
 
-@plan: 30
+@plan: 29
 
 call @:myproc
 @is$: myproc.result$, "foo bar", "Empty call"
@@ -21,11 +21,8 @@ call @:myproc: "baz"
 call @:myproc("baz")
 @is$: myproc.result$, "baz bar", "Paren call with one argument"
 
-call @:myproc: "baz")
-@is$: myproc.result$, "baz bar", "Mixed call with one argument"
-
-call @:myproc : "baz", "fee")
-@is$: myproc.result$, "baz fee", "Spaced colon with closing paren"
+call @:myproc : "baz", "fee"
+@is$: myproc.result$, "baz fee", "Spaced colon with one argument"
 
 call @:myproc ("baz", "fee")
 @is$: myproc.result$, "baz fee", "Paren call with space before"
@@ -45,7 +42,7 @@ call @:myproc: 10
 call @:myproc: "baz", "10"
 @is$: myproc.result$, "baz 10", "String and numish string"
 
-call @:myproc: "baz", 10)
+call @:myproc: "baz", 10
 @is$: myproc.result$, "baz 10", "String and number"
 
 call @:myproc: "5", 10
@@ -147,11 +144,5 @@ endproc
 
 call @:fibonacci: 7
 @is: fibonacci.return, 13, "Recursive Fibonacci"
-
-
-call @:undefined: undefined
-procedure undefined ()
-  @diag: .args$
-endproc
 
 @done_testing()
