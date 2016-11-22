@@ -1,7 +1,7 @@
 include ../procedures/varargs.proc
 include ../../plugin_tap/procedures/more.proc
 
-@plan: 10
+@plan: 9
 
 result$ = ""
 call varargs myproc
@@ -24,12 +24,8 @@ call varargs myproc("bar")
 @is$: result$, "bar bar", "Paren call with one argument"
 
 result$ = ""
-call varargs myproc: "bar")
-@is$: result$, "bar bar", "Mixed call with one argument"
-
-result$ = ""
-call varargs myproc : "bar", "foo")
-@is$: result$, "bar foo", "Spaced colon with closing paren"
+call varargs myproc : "bar", "foo"
+@is$: result$, "bar foo", "Spaced colon with one argument"
 
 result$ = ""
 call varargs myproc ("bar", "foo")
