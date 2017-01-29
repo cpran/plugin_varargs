@@ -1,4 +1,7 @@
 - next: # unreleased
+- v0.0.6:
+  - Fix:
+    - Fixed broken support for empty string variables
 - v0.0.5:
   - Fix:
     - Improved support for undefined variables
