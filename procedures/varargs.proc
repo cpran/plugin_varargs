@@ -219,9 +219,11 @@ procedure arg: .in$
 
         .v$[.n] = nocheck writeInfo: '.vv$'
         if .v$[.n] == "" and .vv$ != """"""
-          exitScript: "Unknown variable:" + newline$ +
-            ... "» " + .vv$ + newline$ +
-            ... " found in " + newline$ + "» " + .in$ + " «"
+          if !variableExists(.vv$)
+            exitScript: "Unknown variable:" + newline$ +
+              ... "» " + .vv$ + newline$ +
+              ... " found in " + newline$ + "» " + .in$ + " «"
+          endif
         endif
       endif
     endfor
