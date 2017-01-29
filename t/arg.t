@@ -1,7 +1,7 @@
 include ../procedures/varargs.proc
 include ../../plugin_tap/procedures/more.proc
 
-@plan: 38
+@plan: 40
 
 a = 5
 a[1] = 5
@@ -48,6 +48,11 @@ call arg undefined, undefined, 10
 call arg ""
 @is:  arg.n,     0,  "empty string: n"
 @is$: arg.t$,    "", "empty string: t$"
+
+empty$ = ""
+call arg empty$
+@is:  arg.n,     1,   "empty string var: n"
+@is$: arg.t$,    "s", "empty string var: t$"
 
 @arg("")
 @is:  arg.n,     0,  "blank: n"
